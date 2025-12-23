@@ -1,20 +1,21 @@
 ﻿<nav class="navbar navbar-expand-lg app-navbar shadow">
     <div class="container-fluid">
 
-        <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
-            PermitManagement
+        <a class="navbar-brand d-flex align-items-center gap-2 fw-bold"
+           asp-controller="Home"
+           asp-action="Index">
+            <img src="~/images/logo.png"
+                 alt="Permit Management"
+                 height="32"
+                 asp-append-version="true" />
+            <span>Permit Management</span>
         </a>
 
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav me-auto fw-bold">
-                <li class="nav-item">
+                @* <li class="nav-item">
                     <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                </li>
-
-            </ul>
-
-            <ul class="navbar-nav ms-auto align-items-center fw-bold">
-
+                </li> *@
                 @if (User.Identity?.IsAuthenticated == true)
                 {
                     <li class="nav-item me-2">
@@ -26,6 +27,9 @@
                     </li>
                 }
 
+            </ul>
+
+            <ul class="navbar-nav ms-auto align-items-center fw-bold">
                 <partial name="_LoginPartial" />
 
             </ul>
