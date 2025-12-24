@@ -19,26 +19,31 @@ public class PermissionClaimService
         _userManager = userManager;
     }
 
-    public async Task SyncClaimsAsync(ApplicationUser user)
+    public async Task SyncPermissionsAsync(ApplicationUser user)
     {
+        // Remove old permission claims
         var existingClaims = await _userManager.GetClaimsAsync(user);
         var permissionClaims = existingClaims
             .Where(c => c.Type == "permission")
             .ToList();
 
-        foreach (var c in permissionClaims)
-            await _userManager.RemoveClaimAsync(user, c);
+        foreach (var claim in permissionClaims)
+        {
+            await _userManager.RemoveClaimAsync(user, claim);
+        }
 
+        // Fetch permissions from DB (employee-based)
         var permissions = await _db.UserPermissions
             .Where(up => up.UserId == user.EmployeeId)
             .Select(up => up.Permission.Name)
             .ToListAsync();
 
-        foreach (var p in permissions)
+        // Add permission claims
+        foreach (var permission in permissions)
         {
             await _userManager.AddClaimAsync(
                 user,
-                new Claim("permission", p)
+                new Claim("permission", permission)
             );
         }
     }

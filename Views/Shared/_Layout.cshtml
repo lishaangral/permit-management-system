@@ -14,20 +14,36 @@
         var controller = ViewContext.RouteData.Values["controller"]?.ToString();
         var action = ViewContext.RouteData.Values["action"]?.ToString();
 
-        var isDashboard = controller == "Dashboard";
+        var dashboardControllers = new[]
+        {
+                "Dashboard",
+                "PermitAnalysis",
+                "ViolationAnalysis",
+                "Observations",
+                "Permits",
+                "PermitTypes",
+                "PermitTypeIssuers",
+                "PermitTypeViolations",
+                "Violations",
+                "IssuerRoles",
+                "Locations"
+        };
+
+        var isDashboardArea = dashboardControllers.Contains(controller);
+
         var isProfile = controller == "Account" && action == "Profile";
 
-        var hideFooterPages = isDashboard || isProfile;
+        var hideFooterPages = isDashboardArea || isProfile;
 }
 
-<body class="@(hideFooterPages ? "no-footer" : "") @(isDashboard ? "" : "no-sidebar")">
+<body class="@(hideFooterPages ? "no-footer" : "") @(isDashboardArea ? "" : "no-sidebar")">
 
     <header>
         <partial name="_Navbar" />
     </header>
 
     <div class="app-wrapper">
-        @if (isDashboard)
+        @if (isDashboardArea)
         {
             <partial name="_Sidebar" />
         }

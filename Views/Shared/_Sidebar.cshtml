@@ -1,4 +1,12 @@
-﻿<aside id="sidebar" class="app-sidebar expanded">
+﻿@using PemitManagement.Services
+@using PemitManagement.ViewModels.Sidebar
+@inject SidebarService SidebarService
+
+@{
+    var items = SidebarService.GetSidebar(User);
+}
+
+<aside id="sidebar" class="app-sidebar">
     <div class="sidebar-header">
         <span class="sidebar-title">Menu</span>
         <button class="sidebar-toggle"
@@ -9,11 +17,52 @@
     </div>
 
     <nav class="sidebar-nav">
-        <a asp-controller="Dashboard"
-           asp-action="Index"
-           class="sidebar-link active">
-            <i class="fa fa-home"></i>
-            <span class="link-text">Dashboard</span>
-        </a>
+        @foreach (var item in items)
+        {
+            if (item.RequiredPermission != null &&
+            !User.HasClaim("permission", item.RequiredPermission))
+            {
+                continue;
+            }
+
+            if (item.Children.Any())
+            {
+                var visibleChildren = item.Children
+                .Where(c => c.RequiredPermission == null ||
+                User.HasClaim("permission", c.RequiredPermission))
+                .ToList();
+
+                if (!visibleChildren.Any())
+                {
+                    continue;
+                }
+
+                <div class="sidebar-group">
+                    <div class="sidebar-link">
+                        <i class="fa @item.Icon"></i>
+                        <span class="link-text">@item.Title</span>
+                    </div>
+
+                    @foreach (var child in visibleChildren)
+                    {
+                        <a asp-controller="@child.Controller"
+                           asp-action="@child.Action"
+                           class="sidebar-link ms-3">
+                            <i class="fa @child.Icon"></i>
+                            <span class="link-text">@child.Title</span>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                <a asp-controller="@item.Controller"
+                   asp-action="@item.Action"
+                   class="sidebar-link">
+                    <i class="fa @item.Icon"></i>
+                    <span class="link-text">@item.Title</span>
+                </a>
+            }
+        }
     </nav>
 </aside>

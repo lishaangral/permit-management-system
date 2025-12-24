@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PemitManagement.Authorization;
 using PemitManagement.Data;
 using PemitManagement.Data.Seed;
 using PemitManagement.Identity;
@@ -43,30 +44,16 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("CreateObservation",
-        p => p.RequireClaim("permission", "create_observations"));
-
-    options.AddPolicy("DeleteObservation",
-        p => p.RequireClaim("permission", "delete_observations"));
-
-    options.AddPolicy("CreatePermit",
-        p => p.RequireClaim("permission", "create_permits"));
-
-    options.AddPolicy("EditPermit",
-        p => p.RequireClaim("permission", "edit_permits"));
-
-    options.AddPolicy("DeletePermit",
-        p => p.RequireClaim("permission", "delete_permits"));
-
-    options.AddPolicy("ManageLocations",
-        p => p.RequireClaim("permission", "manage_locations"));
-
-    options.AddPolicy("ManageViolations",
-        p => p.RequireClaim("permission", "manage_violations"));
+    foreach (var permission in PermissionConstants.All)
+    {
+        options.AddPolicy(permission, policy =>
+            policy.RequireClaim("permission", permission));
+    }
 });
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<PermissionClaimService>();
 
 

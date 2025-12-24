@@ -75,7 +75,7 @@ body {
     top: 80px;
     bottom: 60px; 
     left: 0;
-    width: 240px;
+    width: 250px;
     background-color: #213875;
     color: #ffffff;
     overflow-y: auto;
@@ -112,7 +112,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    font-weight: 600;
+    font-weight: 500;
 }
 
     .sidebar-link:hover,

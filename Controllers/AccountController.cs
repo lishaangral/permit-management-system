@@ -3,23 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PemitManagement.Data;
 using PemitManagement.Identity;
+using PemitManagement.Models;
+using PemitManagement.Services;
 using PemitManagement.ViewModels;
+using System.Security.Claims;
 
 public class AccountController : Controller
 {
     private readonly ApplicationDbContext _db;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly PermissionClaimService _permissionClaimService;
+
 
     public AccountController(
         ApplicationDbContext db,
         SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        PermissionClaimService permissionClaimService)
     {
         _db = db;
         _signInManager = signInManager;
         _userManager = userManager;
+        _permissionClaimService = permissionClaimService;
     }
+
 
     [HttpGet]
     public IActionResult Login()
@@ -53,6 +61,22 @@ public class AccountController : Controller
             };
             await _userManager.CreateAsync(user);
         }
+        await _permissionClaimService.SyncPermissionsAsync(user);
+
+        var permissions = await _db.UserPermissions
+            .Where(up => up.UserId == employee.Id)
+            .Select(up => up.Permission.Name)
+            .ToListAsync();
+
+        var claims = permissions
+            .Select(p => new Claim("permission", p))
+            .ToList();
+
+        await _signInManager.SignInWithClaimsAsync(
+            user,
+            isPersistent: false,
+            claims
+        );
 
         await _signInManager.SignInAsync(user, false);
 
@@ -74,3 +98,4 @@ public class AccountController : Controller
         return View();
     }
 }
+
