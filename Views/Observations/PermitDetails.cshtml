@@ -1,27 +1,180 @@
-﻿@{
-    ViewData["Title"] = "Permit Details";
+﻿@model PemitManagement.ViewModels.Observations.PermitDetailsViewModel
+@{
+    ViewData["Title"] = "Create Observation";
 }
 
-<partial name="_ObservationSteps" model="2" />
+<div class="container-xl">
+    <!-- Step Header -->
+    <partial name="_ObservationSteps" model="2" />
 
-<div class="row justify-content-center">
-    <div class="col-xl-6 col-lg-8 col-md-10">
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body p-4 text-center">
-                <h5 class="fw-bold mb-2">Permit Details</h5>
+    <!-- Permit Number Card -->
+    <div class="card border-0 mb-4 observation-card">
+        <div class="card-body p-4 text-center">
+
+            <div class="mb-3">
+                <h5 class="fw-bold mb-1">Fetch Permit Details</h5>
                 <p class="text-muted">
-                    Permit lookup and details will be implemented here.
+                    Enter the permit number to retrieve permit information.
                 </p>
+            </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a asp-action="Create" class="btn btn-outline-secondary">
-                        Back
-                    </a>
-                    <a asp-action="Violations" class="btn btn-orange">
-                        Continue
-                    </a>
+            <form asp-action="FetchPermit" method="post" novalidate>
+                <div class="row g-2 align-items-end">
+
+                    <div class="col-md-9">
+                        <label class="form-label fw-bold d-flex gap-1">
+                            <h5>Permit Number</h5> <span class="text-danger">*</span>
+                        </label>
+
+                        <input asp-for="PermitNumber"
+                               class="form-control form-control-lg permit-input
+                           @(ViewData.ModelState["PermitNumber"]?.Errors.Any() == true ? "is-invalid" : "")"
+                               placeholder="e.g. 9060HT25002281"
+                               aria-required="true" />
+
+                        <span asp-validation-for="PermitNumber" class="invalid-feedback"></span>
+                    </div>
+
+                    <div class="col-md-3 d-flex gap-2">
+                        <button type="submit"
+                                class="btn btn-orange btn-lg flex-fill">
+                            Fetch
+                        </button>
+
+                        @if (Model.HasSearched)
+                        {
+                            <a asp-action="ClearPermitDetails"
+                               class="btn btn-outline-danger btn-lg flex-fill">
+                                Clear
+                            </a>
+                        }
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- Permit Details -->
+    @if (Model.PermitFound)
+    {
+        <div class="card border-0 observation-card mb-4">
+            <div class="card-body p-5">
+
+                <h4 class="fw-bold mb-4">Permit Details</h4>
+
+                <div class="row g-4">
+
+                    <!-- Permit Information -->
+                    <div class="col-lg-6">
+                        <div class="info-card shadow-sm">
+                            <h6 class="info-card-title">Permit Information</h6>
+
+                            <div class="info-row">
+                                <span>Permit Type</span>
+                                <strong>@(Model.PermitType ?? "—")</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Permit Number</span>
+                                <strong>@Model.PermitNumber</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Agency Name</span>
+                                <strong>@(Model.AgencyName ?? "—")</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Work Order Number</span>
+                                <strong>@(Model.WorkOrderNumber ?? "—")</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Contract Worker</span>
+                                <strong>@(Model.ContractWorkerName ?? "—")</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Information -->
+                    <div class="col-lg-6">
+                        <div class="info-card shadow-sm">
+                            <h6 class="info-card-title">Location Information</h6>
+
+                            <div class="info-row">
+                                <span>Refinery</span>
+                                <strong>@(Model.Refinery ?? "—")</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Visited Site</span>
+                                <strong>@(Model.VisitedSite ?? "—")</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Exact Location</span>
+                                <strong>@(Model.ExactLocation ?? "—")</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Issuer Information -->
+                    <div class="col-12">
+                        <div class="info-card shadow-sm">
+                            <h6 class="info-card-title">Issuer Information</h6>
+
+                            @if (Model.Issuers.Any())
+                            {
+                                @foreach (var issuer in Model.Issuers)
+                                {
+                                    <div class="info-row">
+                                        <span>@issuer.RoleName</span>
+                                        <strong>
+                                            @issuer.EmployeeName
+                                            <span class="text-muted">(@issuer.EmployeeId)</span>
+                                        </strong>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-muted">No issuers found.</div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Receiver Information -->
+                    <div class="col-lg-6">
+                        <div class="info-card shadow-sm">
+                            <h6 class="info-card-title">Receiver Information</h6>
+
+                            <div class="info-row">
+                                <span>Name</span>
+                                <strong>@(Model.ReceiverName ?? "—")</strong>
+                            </div>
+
+                            <div class="info-row">
+                                <span>Employee ID</span>
+                                <strong>@(Model.ReceiverEmployeeId ?? "—")</strong>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
+    }
+
+    <!-- Navigation -->
+    <div class="d-flex justify-content-between mt-5">
+        <a asp-action="Create" class="btn btn-lg btn-outline-secondary">Back</a>
+
+        <a asp-action="Violations"
+           class="btn btn-orange btn-lg @(Model.PermitFound ? "" : "disabled")">
+            Continue
+        </a>
     </div>
 </div>

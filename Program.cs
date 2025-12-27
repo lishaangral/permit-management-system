@@ -55,7 +55,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<SidebarService>();
 builder.Services.AddScoped<PermissionClaimService>();
-
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -91,5 +91,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.UseSession();
 
 app.Run();
