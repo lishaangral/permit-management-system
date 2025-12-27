@@ -5,6 +5,7 @@
 
 # Environment-specific app settings
 *appsettings.Development.json
+*appsettings.Development.json
 *appsettings.Staging.json
 *appsettings.Production.json
 

@@ -1,0 +1,25 @@
+﻿@model int
+@{
+    int current = Model;
+}
+
+<div class="mb-4 text-center">
+    <h2 class="fw-bold mb-1">Create Observation</h2>
+    <p class="text-muted">
+        Report safety violations and permit-related observations.
+    </p>
+</div>
+
+<div class="observation-steps mb-5">
+    <div class="step @(current > 1 ? "completed" : current == 1 ? "active" : "")">
+        Employee Details
+    </div>
+
+    <div class="step @(current > 2 ? "completed" : current == 2 ? "active" : "")">
+        Permit Details
+    </div>
+
+    <div class="step @(current == 3 ? "active" : "")">
+        Violations
+    </div>
+</div>

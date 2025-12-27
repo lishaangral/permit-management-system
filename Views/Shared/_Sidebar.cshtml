@@ -97,8 +97,7 @@
             else
             {
                 var isTopLevelActive =
-                    item.Controller == currentController &&
-                    item.Action == currentAction;
+                    item.Controller == currentController;
 
                 <a asp-controller="@item.Controller"
                    asp-action="@item.Action"

@@ -292,9 +292,10 @@ html.sidebar-collapsed body {
 
 .app-content {
     flex-grow: 1;
-    padding: 24px;
-    margin-left: 240px;
+    padding: 30px;
+    margin-left: 250px;
     transition: margin-left 0.25s ease;
+    justify-self: center;
 }
 
 .sidebar-collapsed .app-content {
@@ -407,4 +408,39 @@ html.sidebar-collapsed body {
 
 .no-footer .app-sidebar {
     bottom: 0;
+}
+
+/* OBSERVATION STEPS STATES */
+
+.observation-steps {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+    .observation-steps .step {
+        flex: 1;
+        padding: 16px;
+        border-radius: 14px;
+        text-align: center;
+        font-weight: 700;
+        background-color: #d3dbe5;
+        color: #374151;
+        transition: all 0.25s ease;
+    }
+
+.observation-steps .step.active {
+    background-color: #e26b15;
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(226, 107, 21, 0.4);
+}
+
+.observation-steps .step.completed {
+    background-color: #213875;
+    color: #ffffff;
+}
+
+.observation-card {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
 }

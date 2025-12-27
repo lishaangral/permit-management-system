@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PemitManagement.Data;
 
@@ -11,9 +12,11 @@ using PemitManagement.Data;
 namespace PemitManagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251227121136_AddPermitIssuerForeignKeys")]
+    partial class AddPermitIssuerForeignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -357,6 +360,10 @@ namespace PemitManagement.Migrations
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
+
+                    b.HasAlternateKey("EmpNo")
+                        .HasName("AK_employees_emp_no");
+
                     b.HasIndex(new[] { "EmpNo" }, "emp_no")
                         .IsUnique();
 
